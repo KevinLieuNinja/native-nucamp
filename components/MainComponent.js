@@ -6,7 +6,6 @@ import About from "../components/AboutComponent";
 import Contact from "../components/ContactComponent";
 import SafeAreaView from "react-native-safe-area-view";
 import { connect } from "react-redux";
-
 import { Icon } from "react-native-elements";
 import {
   View,
@@ -22,6 +21,7 @@ import {
   fetchPromotions,
   fetchPartners,
 } from "../redux/ActionCreators";
+import Reservation from "./ReservationComponent";
 import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer } from "react-navigation";
 import { createDrawerNavigator, DrawerItems } from "react-navigation-drawer";
@@ -110,6 +110,29 @@ const AboutNavigator = createStackNavigator(
   }
 );
 
+const ReservationNavigator = createStackNavigator(
+  { Reservation: { screen: Reservation } },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#5637DD",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="tree"
+          type="font-awesome"
+          iconStyle={styles.stackIcon}
+          onPress={() => navigation.toggleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+
 const ContactNavigator = createStackNavigator(
   { Contact: { screen: Contact } },
   {
@@ -172,6 +195,15 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerIcon: ({ tintColor }) => (
           <Icon name="list" type="font-awesome" size={24} color={tintColor} />
+        ),
+      },
+    },
+    Reservation: {
+      screen: ReservationNavigator,
+      navigationOptions: {
+        drawerLabel: "Reserve Campsite",
+        drawerIcon: ({ tintColor }) => (
+          <Icon name="tree" type="font-awesome" size={24} color={tintColor} />
         ),
       },
     },
