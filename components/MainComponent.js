@@ -5,6 +5,7 @@ import Home from "../components/HomeComponent";
 import About from "../components/AboutComponent";
 import Contact from "../components/ContactComponent";
 import SafeAreaView from "react-native-safe-area-view";
+import Favorites from "./FavoritesComponent";
 import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import {
@@ -133,6 +134,29 @@ const ReservationNavigator = createStackNavigator(
   }
 );
 
+const FavoritesNavigator = createStackNavigator(
+  { Favorites: { screen: Favorites } },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#5637DD",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="heart"
+          type="font-awesome"
+          iconStyle={styles.stackIcon}
+          onPress={() => navigation.toggleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+
 const ContactNavigator = createStackNavigator(
   { Contact: { screen: Contact } },
   {
@@ -204,6 +228,15 @@ const MainNavigator = createDrawerNavigator(
         drawerLabel: "Reserve Campsite",
         drawerIcon: ({ tintColor }) => (
           <Icon name="tree" type="font-awesome" size={24} color={tintColor} />
+        ),
+      },
+    },
+    Favorites: {
+      screen: FavoritesNavigator,
+      navigationOptions: {
+        drawerLabel: "My Favorite Campsites",
+        drawerIcon: ({ tintColor }) => (
+          <Icon name="heart" type="font-awesome" size={24} color={tintColor} />
         ),
       },
     },
