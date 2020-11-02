@@ -5,6 +5,8 @@ import Home from "../components/HomeComponent";
 import About from "../components/AboutComponent";
 import Contact from "../components/ContactComponent";
 import SafeAreaView from "react-native-safe-area-view";
+import Reservation from "./ReservationComponent";
+import Login from "../components/LoginComponent";
 import Favorites from "./FavoritesComponent";
 import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
@@ -22,7 +24,6 @@ import {
   fetchPromotions,
   fetchPartners,
 } from "../redux/ActionCreators";
-import Reservation from "./ReservationComponent";
 import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer } from "react-navigation";
 import { createDrawerNavigator, DrawerItems } from "react-navigation-drawer";
@@ -33,6 +34,8 @@ const mapDispatchToProps = {
   fetchPartners,
   fetchPromotions,
 };
+
+//  ALL THE NAVIGATION CREATORS //
 
 const DirectoryNavigator = createStackNavigator(
   {
@@ -180,6 +183,31 @@ const ContactNavigator = createStackNavigator(
   }
 );
 
+const LoginNavigator = createStackNavigator(
+  {
+    Login: { screen: Login },
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#563dd",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="Sign-in"
+          type="font-awesome"
+          iconStyle={styles.stackIcon}
+          onPress={() => navigation.toggleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+
 const CustomDrawerContentComponent = (props) => {
   return (
     <ScrollView>
@@ -204,8 +232,23 @@ const CustomDrawerContentComponent = (props) => {
   );
 };
 
+// THE INDEX FOR ALL THE NAVIGATIONS //
+
 const MainNavigator = createDrawerNavigator(
   {
+    Login: {
+      screen: LoginNavigator,
+      navigationOptions: {
+        drawerIcon: ({ tintColor }) => (
+          <Icon
+            name="Sign-in"
+            type="font-awesome"
+            size={24}
+            color={tintColor}
+          />
+        ),
+      },
+    },
     Home: {
       screen: HomeNavigator,
       navigationOptions: {
@@ -265,6 +308,7 @@ const MainNavigator = createDrawerNavigator(
     },
   },
   {
+    initialRouteName: "Home",
     drawerBackgroundColor: "#cec8ff",
     contentComponent: CustomDrawerContentComponent,
   }
