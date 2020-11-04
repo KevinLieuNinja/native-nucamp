@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   PanResponder,
+  Share,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
 import { connect } from "react-redux";
@@ -78,6 +79,19 @@ function RenderCampsite(props) {
     },
   });
 
+  const shareCampsite = (title, message, url) => {
+    Share.share(
+      {
+        title: title,
+        message: `${title}: ${message} ${url}`,
+        url: url,
+      },
+      {
+        dialogTitle: "Share" + title,
+      }
+    );
+  };
+
   if (campsite) {
     return (
       <Animatable.View
@@ -113,6 +127,20 @@ function RenderCampsite(props) {
               reverse
               onPress={() => props.onShowModal()}
             />
+            <Icon
+              name={"share"}
+              type="font-awesome"
+              color="#5637dd"
+              raised
+              reverse
+              onPress={() =>
+                shareCampsite(
+                  campsite.name,
+                  campsite.description,
+                  baseUrl + campsite.image
+                )
+              }
+            />
           </View>
         </Card>
       </Animatable.View>
@@ -120,6 +148,7 @@ function RenderCampsite(props) {
   }
   return <View />;
 }
+
 function RenderComments({ comments }) {
   const renderCommentItem = ({ item }) => {
     return (
@@ -149,6 +178,7 @@ function RenderComments({ comments }) {
     </Animatable.View>
   );
 }
+
 class CampsiteInfo extends Component {
   constructor(props) {
     super(props);
@@ -160,6 +190,7 @@ class CampsiteInfo extends Component {
       author: "",
     };
   }
+
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
   };
@@ -257,6 +288,7 @@ class CampsiteInfo extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   cardRow: {
     alignItems: "center",
