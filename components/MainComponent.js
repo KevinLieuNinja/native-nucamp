@@ -8,6 +8,7 @@ import SafeAreaView from "react-native-safe-area-view";
 import Reservation from "./ReservationComponent";
 import Login from "../components/LoginComponent";
 import Favorites from "./FavoritesComponent";
+import NetInfo from "@react-native-community/netinfo";
 import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import {
@@ -17,6 +18,8 @@ import {
   Text,
   ScrollView,
   Image,
+  Alert,
+  ToastAndroid,
 } from "react-native";
 import {
   fetchCampsites,
@@ -322,7 +325,45 @@ class Main extends Component {
     this.props.fetchComments();
     this.props.fetchPromotions();
     this.props.fetchPartners();
+
+    NetInfo.fetch().then((connectionInfo) => {
+      Platform.os === "ios"
+        ? Alert.alert("Initial Network Connectivity Type:", connectionInfo.type)
+        : ToastAndroid.show(
+            "Initial Network Connectivity Type:" + connectionInfo.type,
+            ToastAndroid.LONG
+          );
+    });
+
+    this.unsubscribeNetInfo = NetInfo.addEventListener((connectionInfo) => {
+      this.handleConnectivityChange(connectionInfo);
+    });
   }
+
+  componentWillUnmount() {
+    this.unsubscribeNetInfo();
+  }
+
+  handleConnectivityChange = (connectionInfo) => {
+    let connectionMsg = "your on a connected network.";
+    switch (connectionInfo.type) {
+      case "none":
+        connectionMsg = "no network";
+        break;
+      case "unknown":
+        connectionMsg = "Unknown connectivity";
+        break;
+      case "cellular":
+        connectionMsg = "Connected via celluarly";
+        break;
+      case "wifi":
+        connectionMsg = "Connected via wifi";
+        break;
+    }
+    Platform.OS === "ios"
+      ? Alert.alert(" Connection changed:", connectionMsg)
+      : ToastAndroid.show(connectionMsg, ToastAndroid.LONG);
+  };
   render() {
     return (
       <View
